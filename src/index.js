@@ -13,7 +13,7 @@ const modules = [
 ].map(type => {
     return {
         type: type,
-        module: require(`./${type}`)
+        module: require(`./node/${type}`)
     };
 });
 

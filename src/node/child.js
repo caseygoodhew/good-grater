@@ -1,4 +1,4 @@
-const _groupCall = require('./group-call');
+const _groupCall = require('../group-call');
 const _ = require('lodash');
 
 module.exports = (walker, nodes, options) => (context, done) => {
