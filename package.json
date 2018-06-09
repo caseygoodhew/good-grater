@@ -20,5 +20,12 @@
     "devDependencies": {
         "chai": "^4.1.2",
         "mocha": "^5.2.0"
+    },
+    "dependencies": {
+        "chalk": "^2.4.1",
+        "good-blender": "^1.0.2",
+        "good-spatula": "^1.0.0",
+        "lodash": "^4.17.10",
+        "node-fetch": "^2.1.2"
     }
 }
