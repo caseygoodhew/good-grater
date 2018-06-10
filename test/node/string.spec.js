@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const src = require('./src');
 const utils = require('./utils')();
-const _value = src('./node/value')
+const _string = src('./node/string')
 /*
 describe('Test that value', function() {
     it('returns a string node value as a string', function(done) {
@@ -13,7 +13,7 @@ describe('Test that value', function() {
 
         const value = _value();
         value(context, (result) => {
-            expect(result.text()).to.equal('Mario');
+            expect(result).to.equal('Mario');
             done();
         })
     });
@@ -27,7 +27,7 @@ describe('Test that value', function() {
 
         const value = _value();
         value(context, (result) => {
-            expect(result.text()).to.equal('42');
+            expect(result).to.equal('42');
             done();
         })
     });
@@ -39,7 +39,7 @@ describe('Test that value', function() {
 
         const value = _value();
         value(context, (result) => {
-            expect(result.getDom()).to.deep.equal([]);
+            expect(result).to.be.undefined;
             done();
         })
     });

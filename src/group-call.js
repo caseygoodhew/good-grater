@@ -26,7 +26,7 @@ module.exports = function(handler, allDone) {
 
         invoke: function() {
             if (_waitingOn != -1) {
-                return;
+                throw new Erorr('Cannot invoke a group call already in progress')
             }
 
             _waitingOn = _toInvoke.length;

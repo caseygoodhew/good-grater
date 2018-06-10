@@ -1,4 +1,5 @@
 module.exports = {
     file: require('./file'),
-    url: require('./url')
+    url: require('./url'),
+    memory: require('./memory')
 }
