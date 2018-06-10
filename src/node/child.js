@@ -9,11 +9,7 @@ module.exports = (walker, nodes, options) => (context, done) => {
         done(context);
     });
 
-    children.forEach(child => {
-        groupCall.register(context.node(child), (subcontext) => {
-            var result = subcontext.result();
-        });
-    });
-
-    groupCall.invoke();
+    groupCall(children.map(child => () => (context.node(child), (subcontext) => {
+        var result = subcontext.result();
+    })));
 }

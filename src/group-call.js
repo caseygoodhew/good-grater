@@ -1,8 +1,5 @@
-const emptyFn = () => {}
-
 module.exports = function(handler, allDone) {
 
-    var _toInvoke = []
     var _waitingOn = -1;
 
     const checkAllDone = function() {
@@ -19,23 +16,13 @@ module.exports = function(handler, allDone) {
             checkAllDone();
         }
     }
-    return {
-        register: function(context, done) {
-            _toInvoke.push(() => handler(context, intercept(done || emptyFn)));
-        },
-
-        invoke: function() {
-            if (_waitingOn != -1) {
-                throw new Erorr('Cannot invoke a group call already in progress')
-            }
-
-            _waitingOn = _toInvoke.length;
-            const toInvoke = _toInvoke;
-            _toInvoke = [];
-
-            checkAllDone();
-
-            toInvoke.forEach(x => x());
+    return function(toInvoke) {
+        if (_waitingOn != -1) {
+            throw new Erorr('Cannot invoke a group call already in progress')
         }
+
+        _waitingOn = toInvoke.length;
+        checkAllDone();
+        toInvoke.forEach(x => x());
     }
 }
