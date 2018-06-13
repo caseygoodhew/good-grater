@@ -1,47 +1,82 @@
-const context = require('./context')
+const _ = require('lodash');
+const spatula = require('good-spatula');
+const _context = require('./context')(['done', 'node', 'result', 'local', 'resource']);
 
-const modules = [
-    'resource',
-    'attrib',
-    'child',
-    'array',
-    'string',
-    'number',
-    'html',
-    'raw',
-    'value'
-].map(type => {
-    return {
-        type: type,
-        module: require(`./node/${type}`)
+const walker = function(context, handlers, done) {
+    const node = context.node();
+    const nodeKeys = _.keysIn(node);
+    const handlerContext = context.local({
+        value: context.data()
+    });
+
+    var callback = node.then ?
+        (subcontext) => walker(subcontext.node(node.then), handlers, done) :
+        done;
+
+    handlers.reverse().map(handler => {
+        //(context, data, done)
+        if (handler.default !== undefined || _.includes(nodeKeys, handler.name)) {
+            const value = node[handler.name] === undefined ?
+                handler.default :
+                node[handler.name];
+
+            // long winded but required for correct scoping
+            callback = ((_value, _callback) => (_context) => {
+                handler.handler(_context, _value, _callback);
+            })(value, callback);
+        }
+    });
+
+    callback(handlerContext);
+}
+
+const handlers = [];
+
+const grater = function() {
+
+    return (node, done) => {
+        walker(_context().node(node).data({}).result({}), [].concat(handlers), (context) => {
+            debugger;
+            done(context.result());
+        })
+    }
+};
+
+grater.register = (name, handler, options) => {
+
+    options = options || {};
+
+    const entry = {
+        name: name,
+        handler: handler,
+        default: options.default
     };
+
+    var index = -1;
+
+    if (options.before) {
+        index = _.findIndex(handlers, o => o.name === options.before);
+    }
+
+    handlers.splice(index === -1 ? handlers.length : index, 0, entry);
+}
+
+grater.register('data', require('./handler/data')(spatula));
+
+grater.register('select', require('./handler/select')(spatula), {
+    default: ''
 });
 
-module.exports = (options) => {
-    const nodeMap = {};
+grater.register('attrib', require('./handler/attrib')(spatula));
 
-    const nodes = function(type) {
-        return nodeMap[type];
-    };
+grater.register('match', require('./handler/match')(spatula))
 
-    const walker = require('./walker')(nodes, options);
+grater.register('cast', require('./handler/cast'), {
+    default: 'text'
+});
 
-    modules.forEach(x => {
-        nodeMap[x.type] = x.module(walker, nodes, options);
-    })
+grater.register('follow', require('./handler/follow'));
 
-    return (selectors, startWith, done) => {
-        const root = {
-            type: 'value',
-            value: startWith,
-            then: {
-                type: 'resource',
-                then: selectors
-            }
-        };
+grater.register('name', require('./handler/name'));
 
-        walker(context().node(root).result({}), context => {
-            done(context.result());
-        });
-    };
-};
+module.exports = grater;

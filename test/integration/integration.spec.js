@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
-const _grater = require('../');
-const memoryLoader = _grater.loaders.memory;
+const _grater = require('../../');
+//const memoryLoader = _grater.loaders.memory;
 
 describe('Test that grater does what grater should do', function() {
 
@@ -27,45 +27,55 @@ describe('Test that grater does what grater should do', function() {
     const config = {
         startWith: 'main',
         tree: {
-            selector: '.item',
+            select: '.list a.item',
+            attrib: 'href',
+            follow: true,
             name: 'fruit',
-            type: 'array',
-            then: {
-                attrib: 'href',
-                type: 'attrib',
-                then: {
-                    type: 'resource',
-                    then: [{
-                        name: 'name',
-                        type: 'string',
-                        selector: '.name'
-                    }, {
-                        type: 'string',
-                        selector: '.wieght',
-                        then: [{
-                            type: 'string',
-                            match: /[0-9.]/g,
-                            then: {
-                                type: 'number',
-                                name: 'wieght'
-                            }
-                        }, {
-                            type: 'string',
-                            name: 'units',
-                            match: /[a-z]/gi
-                        }]
-                    }]
-                }
-            }
+            then: [{
+                name: 'name',
+                select: '.name'
+            }, {
+                select: '.wieght',
+                then: [{
+                    match: /[0-9.]/g,
+                    cast: 'number',
+                    name: 'wieght'
+                }, {
+                    name: 'units',
+                    match: /[a-z]/gi
+                }]
+            }]
+        }
+    };
+
+    const simple = {
+        data: `
+            <body>
+                <div class="name">Apple</div>
+                <div class="wieght">183 g</div>
+            </body>`,
+        then: {
+            name: 'name',
+            select: '.name'
         }
     }
 
+
     it('watch the magic happen', function() {
+        return;
+
         const grater = _grater({
-            resourceLoader: memoryLoader(resource)
+            //resourceLoader: memoryLoader(resource)
         });
 
-        grater(config.tree, config.startWith, result => {
+        debugger;
+
+        grater(simple, result => {
+            debugger;
+            expect(result).to.deep.equal({})
+        });
+
+        /*grater(config.tree, config.startWith, result => {
             expect(result).to.deep.equal({
                 "fruit": [{
                         "name": "Apple",
@@ -79,6 +89,6 @@ describe('Test that grater does what grater should do', function() {
                     }
                 ]
             })
-        });
+        });*/
     });
 });

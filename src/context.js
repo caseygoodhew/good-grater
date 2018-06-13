@@ -1,47 +1,64 @@
-module.exports = function() {
+const _ = require('lodash');
 
-    const context = function(node, data, result, locator, parent) {
-        const isContext = node &&
-            typeof node.node === 'function' &&
-            typeof node.data === 'function' &&
-            typeof node.result === 'function' &&
-            typeof node.locator === 'function';
+module.exports = function(_points) {
 
-        const _node = isContext ? node.node() : node;
-        const _data = isContext ? node.data() : data;
-        const _result = isContext ? node.result() : result;
-        const _locator = isContext ? node.locator() : locator;
-        const _parent = isContext ? node : parent;
+    if (!_.isArray(_points)) {
+        throw new TypeError('constructor parameter must be and array');
+    }
+
+    if (!_.every(_points, x => {
+            return typeof x === 'string' && x.length;
+        })) {
+        throw new TypeError('constructor parameter array must contain only strings');
+    }
+
+    if (!_points.length) {
+        throw new TypeError('constructor parameter array cannot be empty');
+    }
+
+    const points = [].concat(_points);
+
+    const context2 = function(values) {
+
+        const rebuild = (index, value) => {
+            return context2(points.map((p, i) => i === index ? value : values[i]))
+        }
+
+        const handler = (index) => (value) => {
+            if (value === undefined) {
+                return values[index];
+            }
+
+            return rebuild(index, value);
+        }
 
         const instance = {
-            node: (n) => {
-                return n === undefined ? _node : context(n, _data, _result, _locator, instance);
-            },
-            data: (d) => {
-                return d === undefined ? _data : context(_node, d, _result, _locator, instance);
-            },
-            result: (r) => {
-                return r === undefined ? _result : context(_node, _data, r, _locator, instance);
-            },
-            locator: (l) => {
-                return l === undefined ? _locator : context(_node, _data, _result, l, instance);
-            },
-            parent: () => {
-                return _parent;
-            },
-            val: () => {
-                return {
-                    node: _node,
-                    data: _data,
-                    result: _result,
-                    locator: _locator,
-                    parent: _parent ? _parent.val() : undefined
+            set: (elem, name, value) => {
+                const index = _.indexOf(points, elem);
+
+                if (index === -1) {
+                    throw new Error(`context does not have a '${elem}' attribute`);
                 }
+
+                const getVal = (current, name, newValue) => {
+                    if (_.isNil(name)) {
+                        return name === undefined ? newValue : name;
+                    } else if (_.isObject(current)) {
+                        current[name] = newValue;
+                        return current;
+                    } else {
+                        return newValue === undefined ? name : newValue;
+                    }
+                }
+
+                return rebuild(index, getVal(values[index], name, value));
             }
         };
+
+        points.forEach((x, i) => instance[x] = handler(i));
 
         return instance;
     }
 
-    return context();
+    return context2([]);
 }

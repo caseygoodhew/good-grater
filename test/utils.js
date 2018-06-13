@@ -1,8 +1,4 @@
-const mockRequire = require('mock-require');
-
 module.exports = function() {
-
-    mockRequire('good-spatula', x => x);
 
     const mockContext = (config) => {
 
@@ -25,6 +21,23 @@ module.exports = function() {
     }
 
     return {
-        mockContext: mockContext
+        mockContext: mockContext,
+        callCounter: (handler) => {
+            const _args = [];
+            const invoke = function() {
+                _args.push(Array.prototype.slice.call(arguments));
+                if (handler) {
+                    return handler(...arguments);
+                }
+            }
+
+            invoke.getLastArgs = () => _args;
+            return invoke;
+        },
+        spatula: x => {
+            return {
+                spatula: x
+            };
+        }
     }
 }
