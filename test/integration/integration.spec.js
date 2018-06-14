@@ -129,7 +129,7 @@ describe('Test that grater does what grater should do', function() {
         });
     });
 
-    it('works with a child node', function() {
+    it('works with a then node', function() {
         const grater = _grater({});
 
         const markup = '<div class="name">Apple</div>';
@@ -150,7 +150,7 @@ describe('Test that grater does what grater should do', function() {
         });
     });
 
-    it('works with a bunch of child nodes', function() {
+    it('works with a bunch of then nodes', function() {
         const grater = _grater({});
 
         const markup = '<div class="name">Apple</div>';
@@ -175,6 +175,30 @@ describe('Test that grater does what grater should do', function() {
         }, result => {
             expect(result).to.deep.equal({
                 result: 183
+            })
+        });
+    });
+
+    it('works with multiple thens', function() {
+        const grater = _grater({});
+
+        const markup = '<div class="name">Apple</div>';
+
+        grater({
+            data: '<body><div class="name">Apple</div></body>',
+            select: '.name',
+            then: [{
+                cast: 'text',
+                attrib: 'class',
+                name: 'class'
+            }, {
+                cast: 'text',
+                name: 'value'
+            }]
+        }, result => {
+            expect(result).to.deep.equal({
+                value: 'Apple',
+                class: 'name'
             })
         });
     });
