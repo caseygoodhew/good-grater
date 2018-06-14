@@ -21,7 +21,7 @@ module.exports = (context, cast, done) => {
                 throw new Error(`Unhandled cast type '${cast}'`)
         }
     }
-    const value = castTo(context.local().value);
+    const value = castTo(context.local());
 
-    done(context.set('local', 'value', value));
+    done(context.local(value));
 }

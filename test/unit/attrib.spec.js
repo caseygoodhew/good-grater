@@ -7,38 +7,36 @@ const attrib = require('./src')('./handler/attrib')(utils.spatula);;
 describe('Test that attrib', function() {
     it('succeeds with a attrib value', function(done) {
 
-        const assert = (attrArgs, setArgs, doneArgs) => {
+        const assert = (attrArgs, localArgs, doneArgs) => {
             expect(attrArgs).to.deep.equal([
                 ["attr-in"]
             ]);
 
-            expect(setArgs).to.deep.equal([
-                ["local", "value", {
+            expect(localArgs).to.deep.equal([
+                [],
+                [{
                     spatula: "attr-value"
                 }]
             ]);
 
-            expect(doneArgs).to.deep.equal([
-                ["set-result"]
-            ]);
+            expect(doneArgs.length).to.equal(1);
 
             done();
         }
 
 
         const attrCC = callCounter(() => 'attr-value');
-        const setCC = callCounter(() => 'set-result');
+        const localCC = callCounter(() => {
+            return {
+                attr: attrCC
+            }
+        });
         const doneCC = callCounter(() => {
-            assert(attrCC.getLastArgs(), setCC.getLastArgs(), doneCC.getLastArgs());
+            assert(attrCC.getLastArgs(), localCC.getLastArgs(), doneCC.getLastArgs());
         });
 
         const context = {
-            local: () => {
-                return {
-                    attr: attrCC
-                }
-            },
-            set: setCC
+            local: localCC
         };
 
         attrib(context, 'attr-in', doneCC);

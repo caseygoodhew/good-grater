@@ -5,9 +5,7 @@ const _context = require('./context')(['data', 'node', 'result', 'local', 'resou
 const walker = function(context, handlers, done) {
     const node = context.node();
     const nodeKeys = _.keysIn(node);
-    const handlerContext = context.local({
-        value: context.data()
-    });
+    const handlerContext = context.local(context.data());
 
     var callback = node.then ?
         (subcontext) => walker(subcontext.node(node.then), handlers, done) :

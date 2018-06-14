@@ -7,25 +7,24 @@ const match = require('./src')('./handler/match')(utils.spatula);;
 describe('Test that match', function() {
 
     const invokeTest = (input, local, output) => {
-        const assert = (setArgs, doneArgs) => {
-            expect(setArgs).to.deep.equal([
-                ["local", "value", output]
+        const assert = (localArgs, doneArgs) => {
+            expect(localArgs).to.deep.equal([
+                [],
+                [
+                    output
+                ]
             ]);
 
-            expect(doneArgs).to.deep.equal([
-                ["set-result"]
-            ]);
+            expect(doneArgs.length).to.equal(1);
         }
 
-        const setCC = callCounter(() => 'set-result');
-        const doneCC = callCounter(() => {
-            assert(setCC.getLastArgs(), doneCC.getLastArgs());
-        });
-
+        const localCC = callCounter(local)
         const context = {
-            local: local,
-            set: setCC
+            local: localCC
         };
+        const doneCC = callCounter(() => {
+            assert(localCC.getLastArgs(), doneCC.getLastArgs());
+        });
 
         match(context, input, doneCC);
     }

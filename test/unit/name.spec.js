@@ -26,11 +26,7 @@ describe('Test that name', function() {
         });
 
         const context = {
-            local: () => {
-                return {
-                    value: 'local-value'
-                }
-            },
+            local: () => 'local-value',
             set: setCC
         };
 

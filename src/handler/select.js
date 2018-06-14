@@ -3,5 +3,5 @@ module.exports = (spatula) => (context, selector, done) => {
     const value = spatula(data);
     const result = value(selector);
 
-    done(context.data(result).set('local', 'value', result));
+    done(context.data(result).local(result));
 }

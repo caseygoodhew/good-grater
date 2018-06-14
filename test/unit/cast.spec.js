@@ -9,7 +9,7 @@ describe('Test that cast', function() {
     const invokeTest = (type, input, output) => {
         const msg = `*** type: '${type}', input: '${input}', output: '${output}' ***`;
 
-        const assert = (htmlArgs, textArgs, setArgs, doneArgs) => {
+        const assert = (htmlArgs, textArgs, localArgs, doneArgs) => {
             if (type === 'html') {
                 expect(htmlArgs).to.deep.equal([
                     []
@@ -24,36 +24,32 @@ describe('Test that cast', function() {
                 ], msg);
             }
 
-            expect(setArgs).to.deep.equal([
-                ["local", "value", output]
+            expect(localArgs).to.deep.equal([
+                [],
+                [output]
             ], msg);
 
-            expect(doneArgs).to.deep.equal([
-                ["set-result"]
-            ], msg);
+            expect(doneArgs.length).to.equal(1, msg);
         }
 
         const htmlCC = callCounter(() => input);
         const textCC = callCounter(() => input);
-        const setCC = callCounter(() => 'set-result');
+        const localCC = callCounter(() => {
+            return {
+                html: htmlCC,
+                text: textCC
+            }
+        });
         const doneCC = callCounter(() => {
             assert(
                 htmlCC.getLastArgs(),
                 textCC.getLastArgs(),
-                setCC.getLastArgs(),
+                localCC.getLastArgs(),
                 doneCC.getLastArgs());
         });
 
         const context = {
-            local: () => {
-                return {
-                    value: {
-                        html: htmlCC,
-                        text: textCC
-                    }
-                }
-            },
-            set: setCC
+            local: localCC
         };
 
         cast(context, type, doneCC);
