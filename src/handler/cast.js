@@ -1,4 +1,4 @@
-module.exports = (context, cast, done) => {
+module.exports = (spatual) => (context, cast, done) => {
     if (context.getDom) {
         throw new TypeError('This module doesn\'t use spatula. Stop trying to do that.')
     }
@@ -21,7 +21,7 @@ module.exports = (context, cast, done) => {
                 throw new Error(`Unhandled cast type '${cast}'`)
         }
     }
-    const value = castTo(context.local());
+    const value = castTo(spatual(context.data()));
 
-    done(context.local(value));
+    done(context.data(value));
 }

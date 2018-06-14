@@ -1,11 +1,10 @@
 const _ = require('lodash');
 const spatula = require('good-spatula');
-const _context = require('./context')(['data', 'node', 'result', 'local', 'resource']);
+const _context = require('./context')(['data', 'node', 'result', 'resource']);
 
 const walker = function(context, handlers, done) {
     const node = context.node();
     const nodeKeys = _.keysIn(node);
-    const handlerContext = context.local(context.data());
 
     var callback = node.then ?
         (subcontext) => walker(subcontext.node(node.then), handlers, done) :
@@ -25,7 +24,7 @@ const walker = function(context, handlers, done) {
         }
     });
 
-    callback(handlerContext);
+    callback(context);
 }
 
 const handlers = [];
@@ -69,7 +68,7 @@ grater.register('attrib', require('./handler/attrib')(spatula));
 
 grater.register('match', require('./handler/match')(spatula))
 
-grater.register('cast', require('./handler/cast'));
+grater.register('cast', require('./handler/cast')(spatula));
 
 grater.register('name', require('./handler/name'));
 

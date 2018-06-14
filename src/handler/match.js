@@ -1,7 +1,7 @@
 module.exports = (spatula) => (context, match, done) => {
 
     const getValue = () => {
-        const value = context.local();
+        const value = context.data();
         if (!value) {
             return '';
         }
@@ -14,5 +14,5 @@ module.exports = (spatula) => (context, match, done) => {
     }
 
     const result = (String(getValue()).match(match) || []).join('');
-    done(context.local(spatula(result)));
+    done(context.data(result));
 }

@@ -3,5 +3,5 @@ module.exports = (context, name, done) => {
         throw new TypeError('This module doesn\'t use spatula. Stop trying to do that.')
     }
 
-    done(context.set('result', name, context.local()));
+    done(context.set('result', name, context.data()));
 }

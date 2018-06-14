@@ -1,7 +1,11 @@
 module.exports = (spatula) => (context, selector, done) => {
-    const data = context.data();
-    const value = spatula(data);
-    const result = value(selector);
+    if (!selector) {
+        done(context);
+    } else {
+        const data = context.data();
+        const value = spatula(data);
+        const result = value(selector);
 
-    done(context.data(result).local(result));
+        done(context.data(result));
+    }
 }
