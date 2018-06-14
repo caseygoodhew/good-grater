@@ -48,33 +48,84 @@ describe('Test that grater does what grater should do', function() {
         }
     };
 
-    const simple = {
-        data: `
-            <body>
-                <div class="name">Apple</div>
-                <div class="wieght">183 g</div>
-            </body>`,
-        then: {
+    it('works with a flat node', function() {
+        const grater = _grater({});
+
+        grater({
+            data: `
+                <body>
+                    <div class="name">Apple</div>
+                </body>`,
             name: 'name',
-            select: '.name'
-        }
-    }
-
-
-    it('watch the magic happen', function() {
-        return;
-
-        const grater = _grater({
-            //resourceLoader: memoryLoader(resource)
+            select: '.name',
+            cast: 'text'
+        }, result => {
+            expect(result).to.deep.equal({
+                name: 'Apple'
+            })
         });
+    });
 
-        debugger;
+    it('works with a single child node', function() {
 
-        grater(simple, result => {
-            debugger;
-            expect(result).to.deep.equal({})
+        const grater = _grater({});
+
+        grater({
+            data: `
+                <body>
+                    <div class="name">Apple</div>
+                </body>`,
+            then: {
+                name: 'name',
+                select: '.name',
+                cast: 'text'
+            }
+        }, result => {
+            expect(result).to.deep.equal({
+                name: 'Apple'
+            })
         });
+    });
 
+    it('works with a match child node', function() {
+
+        const grater = _grater({});
+
+        grater({
+            data: `
+                <body>
+                    <div class="name">Apple</div>
+                    <div class="weight">183 g</div>
+                </body>`,
+            then: {
+                name: 'weight',
+                select: '.weight',
+                match: /[0-9]/g,
+                cast: 'number'
+            }
+        }, result => {
+            expect(result).to.deep.equal({
+                weight: 183
+            })
+        });
+        /*
+                grater({
+                    data: `
+                        <body>
+                            <div class="name">Apple</div>
+                            <div class="wieght">183 g</div>
+                        </body>`,
+                    then: {
+                        name: 'wieght',
+                        select: '.name',
+                        cast: 'text'
+                    }
+                }, result => {
+                    expect(result).to.deep.equal({
+                        wieght: '183'
+                    })
+                });
+        */
         /*grater(config.tree, config.startWith, result => {
             expect(result).to.deep.equal({
                 "fruit": [{

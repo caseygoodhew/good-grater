@@ -6,11 +6,13 @@ module.exports = (spatula) => (context, match, done) => {
             return '';
         }
 
-        if (typeof local.text === 'function') {
-            return local.text();
+        const value = local.value || local;
+
+        if (typeof value.text === 'function') {
+            return value.text();
         }
 
-        return local;
+        return value;
     }
 
     const result = (String(getValue()).match(match) || []).join('');

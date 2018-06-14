@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const spatula = require('good-spatula');
-const _context = require('./context')(['done', 'node', 'result', 'local', 'resource']);
+const _context = require('./context')(['data', 'node', 'result', 'local', 'resource']);
 
 const walker = function(context, handlers, done) {
     const node = context.node();
@@ -13,14 +13,14 @@ const walker = function(context, handlers, done) {
         (subcontext) => walker(subcontext.node(node.then), handlers, done) :
         done;
 
-    handlers.reverse().map(handler => {
+    handlers.map(handler => {
         //(context, data, done)
         if (handler.default !== undefined || _.includes(nodeKeys, handler.name)) {
             const value = node[handler.name] === undefined ?
                 handler.default :
                 node[handler.name];
 
-            // long winded but required for correct scoping
+            // long winded but apparently required for correct scoping
             callback = ((_value, _callback) => (_context) => {
                 handler.handler(_context, _value, _callback);
             })(value, callback);
@@ -35,7 +35,7 @@ const handlers = [];
 const grater = function() {
 
     return (node, done) => {
-        walker(_context().node(node).data({}).result({}), [].concat(handlers), (context) => {
+        walker(_context.node(node).data({}).result({}), [].concat(handlers).reverse(), (context) => {
             debugger;
             done(context.result());
         })
@@ -71,12 +71,10 @@ grater.register('attrib', require('./handler/attrib')(spatula));
 
 grater.register('match', require('./handler/match')(spatula))
 
-grater.register('cast', require('./handler/cast'), {
-    default: 'text'
-});
-
-grater.register('follow', require('./handler/follow'));
+grater.register('cast', require('./handler/cast'));
 
 grater.register('name', require('./handler/name'));
+
+grater.register('follow', require('./handler/follow'));
 
 module.exports = grater;
