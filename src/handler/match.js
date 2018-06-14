@@ -1,4 +1,4 @@
-module.exports = (spatula) => (context, match, done) => {
+module.exports = (context, match, done) => {
 
     const getValue = () => {
         const value = context.data();

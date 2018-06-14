@@ -2,13 +2,13 @@ const expect = require('chai').expect;
 const utils = require('./utils')();
 const callCounter = utils.callCounter;
 
-const match = require('./src')('./handler/match')(utils.spatula);;
+const match = require('./src')('./handler/match');
 
 describe('Test that match', function() {
 
-    const invokeTest = (input, local, output) => {
-        const assert = (localArgs, doneArgs) => {
-            expect(localArgs).to.deep.equal([
+    const invokeTest = (input, data, output) => {
+        const assert = (dataArgs, doneArgs) => {
+            expect(dataArgs).to.deep.equal([
                 [],
                 [
                     output
@@ -18,54 +18,50 @@ describe('Test that match', function() {
             expect(doneArgs.length).to.equal(1);
         }
 
-        const localCC = callCounter(local)
+        const dataCC = callCounter(data)
         const context = {
-            local: localCC
+            data: dataCC
         };
         const doneCC = callCounter(() => {
-            assert(localCC.getLastArgs(), doneCC.getLastArgs());
+            assert(dataCC.getLastArgs(), doneCC.getLastArgs());
         });
 
         match(context, input, doneCC);
     }
 
-    it('succeeds with valid regex value using spatula local', function() {
+    it('succeeds with valid regex value using spatula data', function() {
         invokeTest(/[0-9]/g, () => {
-            return {
-                text: () => 'abc42xyz'
-            }
-        }, {
-            'spatula': '42'
-        })
+                return {
+                    text: () => 'abc42xyz'
+                }
+            },
+            '42'
+        )
     });
 
-    it('succeeds with valid regex value using string local', function() {
-        invokeTest(/[0-9]/g, () => 'abc42xyz', {
-            'spatula': '42'
-        })
+    it('succeeds with valid regex value using string data', function() {
+        invokeTest(/[0-9]/g, () => 'abc42xyz', '42')
     });
 
-    it('succeeds with valid regex value using undefined local', function() {
-        invokeTest(/[0-9]/g, () => {}, {
-            'spatula': ''
-        })
+    it('succeeds with valid regex value using undefined data', function() {
+        invokeTest(/[0-9]/g, () => {}, '')
     });
 
-    it('succeeds with valid regex value using number local', function() {
-        invokeTest(/[0-9]/g, () => 42, {
-            'spatula': '42'
-        })
+    it('succeeds with valid regex value using number data', function() {
+        invokeTest(/[0-9]/g, () => 42, '42')
     });
 
     it('succeeds with a string for the regex value', function() {
-        invokeTest('', () => 'anything', {
-            'spatula': ''
-        })
+        invokeTest('', () => 'anything', '')
     });
 
     it('succeeds with undefined for the regex value', function() {
-        invokeTest(undefined, () => 'anything', {
-            'spatula': ''
-        })
+        invokeTest(undefined, () => 'anything', '')
+    });
+
+    it('throws if you initialize with spatula', function() {
+        expect(() => match({
+            getDom: true
+        })).to.throw(TypeError);
     });
 });

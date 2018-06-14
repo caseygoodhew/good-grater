@@ -2,42 +2,42 @@ const expect = require('chai').expect;
 const utils = require('./utils')();
 const callCounter = utils.callCounter;
 
-const select = require('./src')('./handler/select')(x => y => x);
+const select = require('./src')('./handler/select')(x => y => {
+    return {
+        spatula: x
+    };
+});
 
 describe('Test that select', function() {
     it('succeeds with a select value', function(done) {
-        const assert = (dataArgs, localArgs, doneArgs) => {
+        const assert = (dataArgs, doneArgs) => {
 
             expect(JSON.parse(JSON.stringify(dataArgs))).to.deep.equal([
                 [],
                 [{
-                    value: "data-result"
-                }]
-            ]);
-
-            expect(JSON.parse(JSON.stringify(localArgs))).to.deep.equal([
-                [{
-                    "value": "data-result"
+                    spatula: {
+                        value: 'data-result'
+                    }
                 }]
             ]);
 
             expect(doneArgs).to.deep.equal([
-                ["local-result"]
+                [{
+                    value: 'data-result'
+                }]
             ]);
 
             done();
         }
 
 
-        const localCC = callCounter(() => 'local-result');
         const dataCC = callCounter(() => {
             return {
-                value: 'data-result',
-                local: localCC
+                value: 'data-result'
             };
         });
         const doneCC = callCounter(() => {
-            assert(dataCC.getLastArgs(), localCC.getLastArgs(), doneCC.getLastArgs());
+            assert(dataCC.getLastArgs(), doneCC.getLastArgs());
         });
 
         const context = {

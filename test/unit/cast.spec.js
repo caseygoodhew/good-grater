@@ -2,14 +2,14 @@ const expect = require('chai').expect;
 const utils = require('./utils')();
 const callCounter = utils.callCounter;
 
-const cast = require('./src')('./handler/cast');
+const _cast = require('./src')('./handler/cast');
 
 describe('Test that cast', function() {
 
     const invokeTest = (type, input, output) => {
         const msg = `*** type: '${type}', input: '${input}', output: '${output}' ***`;
 
-        const assert = (htmlArgs, textArgs, localArgs, doneArgs) => {
+        const assert = (htmlArgs, textArgs, dataArgs, doneArgs) => {
             if (type === 'html') {
                 expect(htmlArgs).to.deep.equal([
                     []
@@ -24,7 +24,7 @@ describe('Test that cast', function() {
                 ], msg);
             }
 
-            expect(localArgs).to.deep.equal([
+            expect(dataArgs).to.deep.equal([
                 [],
                 [output]
             ], msg);
@@ -34,7 +34,7 @@ describe('Test that cast', function() {
 
         const htmlCC = callCounter(() => input);
         const textCC = callCounter(() => input);
-        const localCC = callCounter(() => {
+        const dataCC = callCounter(() => {
             return {
                 html: htmlCC,
                 text: textCC
@@ -44,14 +44,15 @@ describe('Test that cast', function() {
             assert(
                 htmlCC.getLastArgs(),
                 textCC.getLastArgs(),
-                localCC.getLastArgs(),
+                dataCC.getLastArgs(),
                 doneCC.getLastArgs());
         });
 
         const context = {
-            local: localCC
+            data: dataCC
         };
 
+        const cast = _cast(x => x);
         cast(context, type, doneCC);
     }
 
@@ -69,11 +70,5 @@ describe('Test that cast', function() {
         invokeTest('number', ' 42.0 ', 42);
         invokeTest('number', 'a 42', NaN);
         invokeTest('number', '42 a', 42);
-    });
-
-    it('throws if you initialize with spatula', function() {
-        expect(() => cast({
-            getDom: true
-        })).to.throw(TypeError);
     });
 });

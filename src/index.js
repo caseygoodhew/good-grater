@@ -66,7 +66,7 @@ grater.register('select', require('./handler/select')(spatula), {
 
 grater.register('attrib', require('./handler/attrib')(spatula));
 
-grater.register('match', require('./handler/match')(spatula))
+grater.register('match', require('./handler/match'));
 
 grater.register('cast', require('./handler/cast')(spatula));
 

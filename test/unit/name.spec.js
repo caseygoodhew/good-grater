@@ -9,7 +9,7 @@ describe('Test that name', function() {
 
         const assert = (setArgs, doneArgs) => {
             expect(setArgs).to.deep.equal([
-                ["result", "name-in", "local-value"]
+                ["result", "name-in", "data-value"]
             ]);
 
             expect(doneArgs).to.deep.equal([
@@ -26,7 +26,7 @@ describe('Test that name', function() {
         });
 
         const context = {
-            local: () => 'local-value',
+            data: () => 'data-value',
             set: setCC
         };
 

@@ -7,12 +7,12 @@ const attrib = require('./src')('./handler/attrib')(utils.spatula);;
 describe('Test that attrib', function() {
     it('succeeds with a attrib value', function(done) {
 
-        const assert = (attrArgs, localArgs, doneArgs) => {
+        const assert = (attrArgs, dataArgs, doneArgs) => {
             expect(attrArgs).to.deep.equal([
                 ["attr-in"]
             ]);
 
-            expect(localArgs).to.deep.equal([
+            expect(dataArgs).to.deep.equal([
                 [],
                 [{
                     spatula: "attr-value"
@@ -26,17 +26,17 @@ describe('Test that attrib', function() {
 
 
         const attrCC = callCounter(() => 'attr-value');
-        const localCC = callCounter(() => {
+        const dataCC = callCounter(() => {
             return {
                 attr: attrCC
             }
         });
         const doneCC = callCounter(() => {
-            assert(attrCC.getLastArgs(), localCC.getLastArgs(), doneCC.getLastArgs());
+            assert(attrCC.getLastArgs(), dataCC.getLastArgs(), doneCC.getLastArgs());
         });
 
         const context = {
-            local: localCC
+            data: dataCC
         };
 
         attrib(context, 'attr-in', doneCC);
