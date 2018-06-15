@@ -1,10 +1,23 @@
 const _ = require('lodash');
 
 module.exports = (_groupCall) => (context, then, done) => {
-    if (_.isArray(then)) {
-        throw new Error('not implemented');
-    } else {
-        debugger;
-        done(context.node(then));
-    }
+
+    const walker = context.walker();
+    const groupCall = _groupCall(() => {
+        done(context);
+    });
+
+    groupCall(
+        _.castArray(then)
+        .map(node =>
+            onedone =>
+            walker(context.node(node), onedone)
+        )
+    );
 }
+
+
+
+
+
+//

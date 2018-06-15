@@ -6,12 +6,12 @@ module.exports = (handlers) => {
         const nodeKeys = _.keysIn(node);
 
         var callback = done;
-
-        node.then ?
-            //(subcontext) => walker(subcontext.node(node.then), handlers, done) :
-            (subcontext) => walker(subcontext, handlers, done) :
-            done;
-
+        /*
+                node.then ?
+                    //(subcontext) => walker(subcontext.node(node.then), done) :
+                    (subcontext) => walker(subcontext, done) :
+                    done;
+        */
         handlers.map(handler => {
             //(context, data, done)
             if (handler.default !== undefined || _.includes(nodeKeys, handler.name)) {

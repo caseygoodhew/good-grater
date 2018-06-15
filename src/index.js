@@ -9,11 +9,9 @@ const _walker = require('./walker');
 const grater = function() {
 
     const register = _register();
-    debugger;
+
     register('data', require('./handler/data')(spatula));
-    register('select', require('./handler/select')(spatula), {
-        default: ''
-    });
+    register('select', require('./handler/select')(spatula));
     register('attrib', require('./handler/attrib')(spatula));
     register('match', require('./handler/match'));
     register('cast', require('./handler/cast')(spatula));
@@ -23,9 +21,9 @@ const grater = function() {
 
     const result = (node, done) => {
         const walker = _walker(register.getHandlers());
-        const context = _context(['data', 'node', 'result', 'resource']);
+        const context = _context(['data', 'node', 'result', 'resource', 'walker']);
 
-        walker(context.node(node).data({}).result({}), (subcontext) => {
+        walker(context.node(node).data({}).result({}).walker(walker), (subcontext) => {
             done(subcontext.result());
         })
     }
