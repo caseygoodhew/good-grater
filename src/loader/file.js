@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 
-module.exports = (locator) => (rel, context, done) => {
+module.exports = (locator) => (context, rel, done) => {
 
     locator(rel, context, (folder, file) => {
         console.log(chalk.grey(`fetching ${file}`));
@@ -11,7 +11,7 @@ module.exports = (locator) => (rel, context, done) => {
             if (err) {
                 throw new Error(`Could not load '${file}'`)
             }
-            done(data);
+            done(context.data(data));
         });
     });
 }

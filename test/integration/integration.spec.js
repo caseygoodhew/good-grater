@@ -4,50 +4,6 @@ const _grater = require('../../');
 
 describe('Test that grater does what grater should do', function() {
 
-    const resource = {
-        'main': `
-            <body>
-                <div class="list">
-                    <a class="item" href="item-1">Item One</a>
-                    <a class="item" href="item-2">Item Two</a>
-                </div>
-            </body>`,
-        'item-1': `
-            <body>
-                <div class="name">Apple</div>
-                <div class="wieght">183 g</div>
-            </body>`,
-        'item-2': `
-            <body>
-                <div class="name">Watermelon</div>
-                <div class="wieght">2.5 kg</div>
-            </body>`
-    };
-
-    const config = {
-        startWith: 'main',
-        tree: {
-            select: '.list a.item',
-            attrib: 'href',
-            follow: true,
-            name: 'fruit',
-            then: [{
-                name: 'name',
-                select: '.name'
-            }, {
-                select: '.wieght',
-                then: [{
-                    match: /[0-9.]/g,
-                    cast: 'number',
-                    name: 'wieght'
-                }, {
-                    name: 'units',
-                    match: /[a-z]/gi
-                }]
-            }]
-        }
-    };
-
     it('works with data, name', function() {
         const grater = _grater({});
 
@@ -196,6 +152,100 @@ describe('Test that grater does what grater should do', function() {
                 name: 'value'
             }]
         }, result => {
+            expect(result).to.deep.equal({
+                value: 'Apple',
+                class: 'name'
+            })
+        });
+    });
+
+    it('works when splitting results', function() {
+        const markup = `
+            <body>
+                <div class="list">
+                    <a class="item" href="item-1">Item One</a>
+                    <a class="item" href="item-2">Item Two</a>
+                </div>
+            </body>`;
+
+        const config = {
+            data: markup,
+            then: {
+                select: '.list a.item',
+                attrib: 'href',
+                name: 'urls',
+                cast: 'array',
+                then: {
+                    cast: 'html',
+                    name: 'value'
+                }
+            }
+        };
+
+        const grater = _grater();
+
+        grater(config, result => {
+            expect(result).to.deep.equal({
+                urls: [{
+                    value: 'item-1'
+                }, {
+                    value: 'item-2'
+                }]
+            })
+        });
+    });
+
+    it('works when it follows', function() {
+        const resource = {
+            'item-1': `
+                <body>
+                    <div class="name">Apple</div>
+                    <div class="wieght">183 g</div>
+                </body>`,
+            'item-2': `
+                <body>
+                    <div class="name">Watermelon</div>
+                    <div class="wieght">2.5 kg</div>
+                </body>`
+        };
+
+        const markup = `
+            <body>
+                <div class="list">
+                    <a class="item" href="item-1">Item One</a>
+                    <a class="item" href="item-2">Item Two</a>
+                </div>
+            </body>`;
+
+        const config = {
+            data: markup,
+            then: {
+                select: '.list a.item',
+                attrib: 'href',
+                follow: true,
+                name: 'fruit',
+                then: [{
+                    name: 'name',
+                    select: '.name'
+                }, {
+                    select: '.wieght',
+                    then: [{
+                        match: /[0-9.]/g,
+                        cast: 'number',
+                        name: 'wieght'
+                    }, {
+                        name: 'units',
+                        match: /[a-z]/gi
+                    }]
+                }]
+            }
+        };
+
+        const grater = _grater(_grater.loader.memory(resource));
+
+
+
+        grater(config, result => {
             expect(result).to.deep.equal({
                 value: 'Apple',
                 class: 'name'

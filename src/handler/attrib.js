@@ -1,4 +1,5 @@
 module.exports = (spatula) => (context, attrib, done) => {
-    const value = spatula(context.data().attr(attrib));
-    done(context.data(value));
+    const data = context.data();
+    const value = data.attr(attrib);
+    done(context.data(spatula(value)));
 }

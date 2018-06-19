@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 
-module.exports = (data) => (rel, context, done) => {
+module.exports = (data) => (context, rel, done) => {
 
     console.log(chalk.grey(`fetching ${rel}`));
 
@@ -8,5 +8,5 @@ module.exports = (data) => (rel, context, done) => {
         throw new Error(`Could not find and object with key '${rel}'`);
     }
 
-    done(data[rel], rel);
+    done(context.data(data[rel]));
 }

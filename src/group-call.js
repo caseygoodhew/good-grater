@@ -12,7 +12,7 @@ module.exports = (allDone) => {
         }
     }
 
-    const oneDone = (index) => (...args) => {
+    const oneDone = (index) => () => {
         status[index] = true;
         checkAllDone();
     }
