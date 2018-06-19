@@ -6,6 +6,7 @@ const _groupCall = require('./group-call');
 const _context = require('./context');
 const _walker = require('./walker');
 const _loaders = require('./loader');
+const _cast = require('./cast')
 
 const grater = function(loader) {
 
@@ -15,7 +16,7 @@ const grater = function(loader) {
     register('select', require('./handler/select')(spatula));
     register('attrib', require('./handler/attrib')(spatula));
     register('match', require('./handler/match'));
-    register('cast', require('./handler/cast')(spatula, _groupCall));
+    register('cast', require('./handler/cast')(spatula, _cast(spatula, _groupCall)));
     register('name', require('./handler/name'));
     register('follow', require('./handler/follow')(spatula, loader));
     register('then', require('./handler/then')(_groupCall));

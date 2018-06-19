@@ -3,7 +3,7 @@ const utils = require('./utils')();
 const callCounter = utils.callCounter;
 
 const _cast = require('./src')('./handler/cast');
-
+/*
 describe('Test that cast', function() {
 
     const invokeTest = (type, input, output) => {
@@ -71,4 +71,4 @@ describe('Test that cast', function() {
         invokeTest('number', 'a 42', NaN);
         invokeTest('number', '42 a', 42);
     });
-});
+});*/
