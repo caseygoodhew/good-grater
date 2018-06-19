@@ -222,11 +222,13 @@ describe('Test that grater does what grater should do', function() {
             then: {
                 select: '.list a.item',
                 attrib: 'href',
-                follow: true,
+                cast: 'array',
                 name: 'fruit',
+                follow: true,
                 then: [{
                     name: 'name',
-                    select: '.name'
+                    select: '.name',
+                    cast: 'text'
                 }, {
                     select: '.wieght',
                     then: [{
@@ -243,12 +245,19 @@ describe('Test that grater does what grater should do', function() {
 
         const grater = _grater(_grater.loader.memory(resource));
 
-
-
         grater(config, result => {
             expect(result).to.deep.equal({
-                value: 'Apple',
-                class: 'name'
+                "fruit": [{
+                        "name": "Apple",
+                        "wieght": 183,
+                        "units": "g"
+                    },
+                    {
+                        "name": "Watermelon",
+                        "wieght": 2.5,
+                        "units": "kg"
+                    }
+                ]
             })
         });
     });
