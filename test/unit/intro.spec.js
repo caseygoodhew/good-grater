@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const _intro = require('./src')('./intro');
 
-describe.only('Test that intro ', function() {
+describe('Test that intro ', function() {
     it('works when we register a module with no dependencies', function(testdone) {
         const intro = _intro();
         intro.iam('test1', (iwant) => {
@@ -145,7 +145,6 @@ describe.only('Test that intro ', function() {
                 return;
             }
 
-            console.log(JSON.stringify(msgs, undefined, 4));
             expect(msgs).to.deep.equal([
                 "Intro timer running @ 1 ms interval",
                 "*** intro stats ***\n1 total active modules\n0 waiting for introduction\n0 waiting for peers\n1 waiting for instance",

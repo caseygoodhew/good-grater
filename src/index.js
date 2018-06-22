@@ -9,16 +9,6 @@ const intro = require('./intro')({
     context: _context
 }, 100);
 
-/*register('data', require('./handler/data')(spatula));
-register('select', require('./handler/select')(spatula));
-register('attrib', require('./handler/attrib')(spatula));
-register('match', require('./handler/match'));
-register('cast', require('./handler/cast')(spatula, _cast(spatula, _groupCall)));
-register('name', require('./handler/name'));
-register('follow', require('./handler/follow')(spatula, loader));
-register('then', require('./handler/then')(_groupCall));*/
-//register(x, igot[i]);
-
 const grater = function(loader, done) {
 
     intro.iam(`cast-map`, require('./cast'));

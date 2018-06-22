@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 const utils = require('./utils')();
 const callCounter = utils.callCounter;
 
-const _context = require('./src')('./context');
+//const _context = require('./src')('./context');
 
 describe('Test that context', function() {
     it('succeeds with one attribute created', function() {
