@@ -1,10 +1,10 @@
 const expect = require('chai').expect;
 const _intro = require('./src')('./intro');
 
-describe('Test that intro ', function() {
+describe.only('Test that intro ', function() {
     it('works when we register a module with no dependencies', function(testdone) {
         const intro = _intro();
-        intro.iam('test1', (iwant, done) => {
+        intro.iam('test1', (iwant) => {
             iwant(() => {
                 testdone()
             });
@@ -16,9 +16,16 @@ describe('Test that intro ', function() {
             initial: () => 'initial'
         });
 
-        intro.iam('test1', (iwant, done) => {
+        intro.iam('test1', (iwant) => {
             iwant('initial', (initial) => {
                 expect(initial()).to.equal('initial');
+                expect(intro.stats()).to.deep.equal({
+                    "actve": ["initial"],
+                    "introducing": [],
+                    "introduced": [],
+                    "dispatched": ["test1"],
+                    "complete": []
+                });
                 testdone();
             });
         });
@@ -49,6 +56,14 @@ describe('Test that intro ', function() {
                 expect(initial()).to.equal('initial');
                 expect(test2()).to.equal('test2');
 
+                expect(intro.stats()).to.deep.equal({
+                    "actve": ["initial", "test2"],
+                    "introducing": [],
+                    "introduced": [],
+                    "dispatched": ["test1"],
+                    "complete": ["test2"]
+                });
+
                 done(() => 'test1');
                 checktestdone('test1');
             });
@@ -57,6 +72,14 @@ describe('Test that intro ', function() {
         intro.iam('test2', (iwant) => {
             iwant('initial', (initial, done) => {
                 expect(initial()).to.equal('initial');
+
+                expect(intro.stats()).to.deep.equal({
+                    "actve": ["initial"],
+                    "introducing": [],
+                    "introduced": ["test1"],
+                    "dispatched": ["test2"],
+                    "complete": []
+                });
 
                 done(() => 'test2');
                 checktestdone('test2');
@@ -110,5 +133,52 @@ describe('Test that intro ', function() {
                 });
             });
         });
+    });
+
+    it('works when we use a logger', function(testdone) {
+        const msgs = [];
+        var isDone = false;
+        const logger = x => {
+            msgs.push(x.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ''));
+
+            if (!isDone) {
+                return;
+            }
+
+            console.log(JSON.stringify(msgs, undefined, 4));
+            expect(msgs).to.deep.equal([
+                "Intro timer running @ 1 ms interval",
+                "*** intro stats ***\n1 total active modules\n0 waiting for introduction\n0 waiting for peers\n1 waiting for instance",
+                "*** intro stats ***\n2 total active modules\n0 waiting for introduction\n0 waiting for peers\n0 waiting for instance"
+            ]);
+            testdone();
+        }
+
+        const intro = _intro({
+            initial: () => 'initial'
+        }, 1, logger);
+
+        const delay = handler => {
+            setTimeout(handler, 3);
+        }
+
+        intro.iam('test1', (iwant) => {
+            iwant('initial', (initial, done) => {
+                expect(initial()).to.equal('initial');
+
+                delay(() => {
+                    isDone = true;
+                    done(() => 'test1');
+                });
+            });
+        });
+    });
+
+    it('throws when using an invalid timer', function() {
+        expect(() => _intro({}, true)).to.throw(Error);
+    });
+
+    it('throws when using an invalid logger', function() {
+        expect(() => _intro({}, 1, true)).to.throw(Error);
     });
 });

@@ -1,4 +1,4 @@
-module.exports = (context, match, done) => {
+const match = (context, match, done) => {
 
     const getValue = () => {
         const value = context.data();
@@ -15,4 +15,14 @@ module.exports = (context, match, done) => {
 
     const result = (String(getValue()).match(match) || []).join('');
     done(context.data(result));
+}
+
+module.exports = (intro) => {
+    intro.iam('match', (iwant) => {
+        iwant('register', (register, done) => {
+            const handler = match;
+            register('match', handler);
+            done(handler);
+        });
+    });
 }

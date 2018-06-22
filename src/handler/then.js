@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-module.exports = (_groupCall) => (context, then, done) => {
+const then = (_groupCall, context, then, done) => {
 
     const node = context.node();
     if (node.cast === 'array') {
@@ -22,8 +22,12 @@ module.exports = (_groupCall) => (context, then, done) => {
     );
 }
 
-
-
-
-
-//
+module.exports = (intro) => {
+    intro.iam('then', (iwant) => {
+        iwant('register', 'groupCall', (register, groupCall, done) => {
+            const handler = (...args) => then(groupCall, ...args);
+            register('then', handler);
+            done(handler);
+        });
+    });
+}

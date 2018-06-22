@@ -4,162 +4,177 @@ const _grater = require('../../');
 
 describe('Test that grater does what grater should do', function() {
 
-    it('works with data, name', function() {
-        const grater = _grater({});
+    it('works with data, name', function(done) {
+        _grater({}, grater => {
+            const markup = '<body><div class="name">Apple</div></body>';
 
-        const markup = '<body><div class="name">Apple</div></body>';
-
-        grater({
-            data: markup,
-            name: 'result'
-        }, result => {
-            expect(result.result.html()).to.equal(markup)
+            grater({
+                data: markup,
+                name: 'result'
+            }, result => {
+                expect(result.result.html()).to.equal(markup);
+                done();
+            });
         });
     });
 
-    it('works with data, select, name', function() {
-        const grater = _grater({});
+    it('works with data, select, name', function(testdone) {
+        _grater({}, grater => {
 
-        const markup = '<div class="name">Apple</div>';
+            const markup = '<div class="name">Apple</div>';
 
-        grater({
-            data: `<body>${markup}</body>`,
-            select: '.name',
-            name: 'result'
-        }, result => {
-            expect(result.result.html()).to.equal(markup)
+            grater({
+                data: `<body>${markup}</body>`,
+                select: '.name',
+                name: 'result'
+            }, result => {
+                expect(result.result.html()).to.equal(markup)
+                testdone();
+            });
         });
     });
 
-    it('works with data, select, cast, name', function() {
-        const grater = _grater({});
+    it('works with data, select, cast, name', function(testdone) {
+        _grater({}, grater => {
 
-        const markup = '<div class="name">Apple</div>';
+            const markup = '<div class="name">Apple</div>';
 
-        grater({
-            data: '<body><div class="name">Apple</div></body>',
-            select: '.name',
-            cast: 'text',
-            name: 'result'
-        }, result => {
-            expect(result).to.deep.equal({
-                result: 'Apple'
-            })
+            grater({
+                data: '<body><div class="name">Apple</div></body>',
+                select: '.name',
+                cast: 'text',
+                name: 'result'
+            }, result => {
+                expect(result).to.deep.equal({
+                    result: 'Apple'
+                });
+                testdone();
+            });
         });
     });
 
-    it('works with data, select, attrib, cast, name', function() {
-        const grater = _grater({});
+    it('works with data, select, attrib, cast, name', function(testdone) {
+        _grater({}, grater => {
 
-        const markup = '<div class="name">Apple</div>';
+            const markup = '<div class="name">Apple</div>';
 
-        grater({
-            data: '<body><div class="name" weight="183 g">Apple</div></body>',
-            select: '.name',
-            attrib: 'weight',
-            cast: 'text',
-            name: 'result'
-        }, result => {
-            expect(result).to.deep.equal({
-                result: '183 g'
-            })
+            grater({
+                data: '<body><div class="name" weight="183 g">Apple</div></body>',
+                select: '.name',
+                attrib: 'weight',
+                cast: 'text',
+                name: 'result'
+            }, result => {
+                expect(result).to.deep.equal({
+                    result: '183 g'
+                });
+                testdone();
+            });
         });
     });
 
-    it('works with data, select, attrib, match, cast, name', function() {
-        const grater = _grater({});
+    it('works with data, select, attrib, match, cast, name', function(testdone) {
+        _grater({}, grater => {
 
-        const markup = '<div class="name">Apple</div>';
+            const markup = '<div class="name">Apple</div>';
 
-        grater({
-            data: '<body><div class="name" weight="183 g">Apple</div></body>',
-            select: '.name',
-            attrib: 'weight',
-            match: /[0-9]/g,
-            cast: 'number',
-            name: 'result'
-        }, result => {
-            expect(result).to.deep.equal({
-                result: 183
-            })
-        });
-    });
-
-    it('works with a then node', function() {
-        const grater = _grater({});
-
-        const markup = '<div class="name">Apple</div>';
-
-        grater({
-            data: '<body><div class="name" weight="183 g">Apple</div></body>',
-            then: {
+            grater({
+                data: '<body><div class="name" weight="183 g">Apple</div></body>',
                 select: '.name',
                 attrib: 'weight',
                 match: /[0-9]/g,
                 cast: 'number',
                 name: 'result'
-            }
-        }, result => {
-            expect(result).to.deep.equal({
-                result: 183
-            })
+            }, result => {
+                expect(result).to.deep.equal({
+                    result: 183
+                });
+                testdone();
+            });
         });
     });
 
-    it('works with a bunch of then nodes', function() {
-        const grater = _grater({});
+    it('works with a then node', function(testdone) {
+        _grater({}, grater => {
 
-        const markup = '<div class="name">Apple</div>';
+            const markup = '<div class="name">Apple</div>';
 
-        grater({
-            data: '<body><div class="name" weight="183 g">Apple</div></body>',
-            then: {
-                select: '.name',
+            grater({
+                data: '<body><div class="name" weight="183 g">Apple</div></body>',
                 then: {
+                    select: '.name',
                     attrib: 'weight',
+                    match: /[0-9]/g,
+                    cast: 'number',
+                    name: 'result'
+                }
+            }, result => {
+                expect(result).to.deep.equal({
+                    result: 183
+                });
+                testdone();
+            });
+        });
+    });
+
+    it('works with a bunch of then nodes', function(testdone) {
+        _grater({}, grater => {
+
+            const markup = '<div class="name">Apple</div>';
+
+            grater({
+                data: '<body><div class="name" weight="183 g">Apple</div></body>',
+                then: {
+                    select: '.name',
                     then: {
-                        match: /[0-9]/g,
+                        attrib: 'weight',
                         then: {
-                            cast: 'number',
+                            match: /[0-9]/g,
                             then: {
-                                name: 'result'
+                                cast: 'number',
+                                then: {
+                                    name: 'result'
+                                }
                             }
                         }
                     }
                 }
-            }
-        }, result => {
-            expect(result).to.deep.equal({
-                result: 183
-            })
+            }, result => {
+                expect(result).to.deep.equal({
+                    result: 183
+                });
+                testdone();
+            });
         });
     });
 
-    it('works with multiple thens', function() {
-        const grater = _grater({});
+    it('works with multiple thens', function(testdone) {
+        _grater({}, grater => {
 
-        const markup = '<div class="name">Apple</div>';
+            const markup = '<div class="name">Apple</div>';
 
-        grater({
-            data: '<body><div class="name">Apple</div></body>',
-            select: '.name',
-            then: [{
-                cast: 'text',
-                attrib: 'class',
-                name: 'class'
-            }, {
-                cast: 'text',
-                name: 'value'
-            }]
-        }, result => {
-            expect(result).to.deep.equal({
-                value: 'Apple',
-                class: 'name'
-            })
+            grater({
+                data: '<body><div class="name">Apple</div></body>',
+                select: '.name',
+                then: [{
+                    cast: 'text',
+                    attrib: 'class',
+                    name: 'class'
+                }, {
+                    cast: 'text',
+                    name: 'value'
+                }]
+            }, result => {
+                expect(result).to.deep.equal({
+                    value: 'Apple',
+                    class: 'name'
+                });
+                testdone();
+            });
         });
     });
 
-    it('works when splitting results', function() {
+    it('works when splitting results', function(testdone) {
         const markup = `
             <body>
                 <div class="list">
@@ -182,20 +197,24 @@ describe('Test that grater does what grater should do', function() {
             }
         };
 
-        const grater = _grater();
+        _grater({}, grater => {
 
-        grater(config, result => {
-            expect(result).to.deep.equal({
-                urls: [{
-                    value: 'item-1'
-                }, {
-                    value: 'item-2'
-                }]
-            })
+            grater(config, result => {
+                expect(result).to.deep.equal({
+                    urls: [{
+                        value: 'item-1'
+                    }, {
+                        value: 'item-2'
+                    }]
+                });
+
+                testdone();
+            });
+
         });
     });
 
-    it('works when it follows', function() {
+    it('works when it follows', function(testdone) {
         const resource = {
             'item-1': `
                 <body>
@@ -243,22 +262,24 @@ describe('Test that grater does what grater should do', function() {
             }
         };
 
-        const grater = _grater(_grater.loader.memory(resource));
+        _grater(_grater.loader.memory(resource), grater => {
 
-        grater(config, result => {
-            expect(result).to.deep.equal({
-                "fruit": [{
-                        "name": "Apple",
-                        "wieght": 183,
-                        "units": "g"
-                    },
-                    {
-                        "name": "Watermelon",
-                        "wieght": 2.5,
-                        "units": "kg"
-                    }
-                ]
-            })
+            grater(config, result => {
+                expect(result).to.deep.equal({
+                    "fruit": [{
+                            "name": "Apple",
+                            "wieght": 183,
+                            "units": "g"
+                        },
+                        {
+                            "name": "Watermelon",
+                            "wieght": 2.5,
+                            "units": "kg"
+                        }
+                    ]
+                });
+                testdone();
+            });
         });
     });
 });
