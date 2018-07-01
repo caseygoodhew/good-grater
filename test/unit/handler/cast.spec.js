@@ -1,13 +1,78 @@
 const expect = require('chai').expect;
 const utils = require('./utils')();
 const callCounter = utils.callCounter;
+const introMock = utils.introMock;
 
 const _cast = require('./src')('./handler/cast');
 
 describe('Test that cast', function() {
-    it('YOU NEED TO FIX CAST', () => {
-        expect('you need to fix cast').to.equal(true)
-    })
+
+    const getCast = (done) => {
+        const mocks = {
+            spatula: utils.spatula,
+            register: callCounter(),
+            "cast-map": {
+                "cast-to": callCounter((_x, _xx, done) => {
+                    done('cast-result');
+                })
+            }
+        };
+
+        const intro = introMock(
+            mocks,
+            (...args) => {
+                done(...args, intro, mocks)
+            }
+        );
+
+        _cast(intro);
+    }
+
+    it('wires itself correctly using intro', function(testdone) {
+        getCast((instance, intro, mocks) => {
+            expect(intro.whoIs()).to.equal('cast');
+            expect(intro.itWants()).to.deep.equal(['register', 'spatula', 'cast-map']);
+            expect(typeof intro.itIs()).to.equal('function');
+            expect(instance).to.equal(intro.itIs());
+
+            const registerArgs = mocks.register.getLastArgs();
+            expect(registerArgs.length).to.equal(1);
+            expect(registerArgs[0].length).to.equal(2);
+            expect(registerArgs[0][0]).to.equal(intro.whoIs());
+            expect(registerArgs[0][1]).to.equal(intro.itIs());
+
+            testdone();
+        });
+    });
+
+    it('succeeds with a data value', function(testdone) {
+        const assert = (castArgs, doneArgs) => {
+            debugger;
+            expect(castArgs).to.deep.equal([
+                [{
+                    spatula: "cast-to"
+                }]
+            ]);
+
+            expect(doneArgs).to.deep.equal([
+                ["cast-result"]
+            ]);
+
+            testdone();
+        }
+
+
+        const dataCC = callCounter(() => 'data-result');
+        const doneCC = callCounter(() => {
+            assert(dataCC.getLastArgs(), doneCC.getLastArgs());
+        });
+
+        const context = {
+            data: dataCC
+        };
+
+        getCast(cast => cast(context, 'cast-to', doneCC));
+    });
 
     /*
         const invokeTest = (type, input, output) => {

@@ -1,8 +1,8 @@
 const _context = require('../context');
 
-const follow = (spatula, loader, context, follow, done) => {
+module.exports = (spatula, loader, context, follow, done) => {
     if (follow !== true) {
-        throw new Error('follow can only be true');
+        throw new Error(`follow can only be true - got ${follow}`);
     }
 
     const node = context.node();
@@ -16,13 +16,3 @@ const follow = (spatula, loader, context, follow, done) => {
         done(context.data(spatula(subloadercontext.data())).loader(subloadercontext));
     })
 };
-
-module.exports = (intro) => {
-    intro.iam('follow', (iwant) => {
-        iwant('register', 'spatula', 'loader', (register, spatula, loader, done) => {
-            const handler = (...args) => follow(spatula, loader, ...args);
-            register('follow', handler);
-            done(handler);
-        });
-    });
-}

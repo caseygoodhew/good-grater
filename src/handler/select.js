@@ -1,4 +1,4 @@
-const select = (spatula, context, selector, done) => {
+module.exports = (spatula, context, selector, done) => {
     if (!selector) {
         done(context);
     } else {
@@ -7,14 +7,4 @@ const select = (spatula, context, selector, done) => {
         const result = value(selector);
         done(context.data(result));
     }
-}
-
-module.exports = (intro) => {
-    intro.iam('select', (iwant) => {
-        iwant('register', 'spatula', (register, spatula, done) => {
-            const handler = (...args) => select(spatula, ...args);
-            register('select', handler);
-            done(handler);
-        });
-    });
 }

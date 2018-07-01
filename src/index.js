@@ -9,6 +9,8 @@ const intro = require('./intro')({
     context: _context
 }, 100);
 
+const introRegister = require('./intro-register')(intro);
+
 const grater = function(loader, done) {
 
     intro.iam(`cast-map`, require('./cast'));
@@ -18,7 +20,7 @@ const grater = function(loader, done) {
     intro.iam('register', x => x(y => y(_register(nodeHandlers))));
 
     nodeHandlers.forEach(x => {
-        require(`./handler/${x}`)(intro);
+        require(`./handler/${x}-intro`)(introRegister);
     });
 
     intro.waitfor('register', ...nodeHandlers, (register) => {
