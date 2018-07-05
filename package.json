@@ -21,7 +21,11 @@
             "test/**/*.spec.js"
         ],
         "cache": true,
-        "all": true
+        "all": true,
+        "reporter": [
+            "text",
+            "html"
+        ]
     },
     "repository": {
         "type": "git",
