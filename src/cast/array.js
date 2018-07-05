@@ -17,7 +17,7 @@ module.exports = (spatula, _groupCall) => (context, val, done) => {
             return function(onedone) {
                 walker(context.node({
                     then: node.then,
-                    follow: node.follow
+                    goto: node.goto
                 }).data(spatula(el)).result({}), (itemcontext) => {
                     result.push(itemcontext.result());
                     onedone();

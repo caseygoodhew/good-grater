@@ -1,8 +1,8 @@
 const _context = require('../context');
 
-module.exports = (spatula, loader, context, follow, done) => {
-    if (follow !== true) {
-        throw new Error(`follow can only be true - got ${follow}`);
+module.exports = (spatula, loader, context, goto, done) => {
+    if (goto !== true) {
+        throw new Error(`goto can only be true - got ${goto}`);
     }
 
     const node = context.node();

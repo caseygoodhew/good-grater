@@ -16,7 +16,7 @@ const grater = function(loader, done) {
     intro.iam(`cast-map`, require('./cast'));
     intro.iam('loader', x => x(y => y(loader)));
 
-    const nodeHandlers = ['data', 'select', 'attrib', 'match', 'cast', 'name', 'follow', 'then'];
+    const nodeHandlers = ['data', 'select', 'attrib', 'match', 'cast', 'name', 'goto', 'then'];
     intro.iam('register', x => x(y => y(_register(nodeHandlers))));
 
     nodeHandlers.forEach(x => {

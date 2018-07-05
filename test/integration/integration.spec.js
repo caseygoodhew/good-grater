@@ -214,7 +214,7 @@ describe('Test that grater does what grater should do', function() {
         });
     });
 
-    it('works when it follows', function(testdone) {
+    it('works when it goes to', function(testdone) {
         const resource = {
             'item-1': `
                 <body>
@@ -243,7 +243,7 @@ describe('Test that grater does what grater should do', function() {
                 attrib: 'href',
                 cast: 'array',
                 name: 'fruit',
-                follow: true,
+                goto: true,
                 then: [{
                     name: 'name',
                     select: '.name',
