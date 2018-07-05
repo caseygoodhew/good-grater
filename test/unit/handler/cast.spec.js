@@ -51,6 +51,17 @@ describe('Test that cast', function() {
         cast(utils.spatula, castMap, context, 'cast-to', doneCC);
     });
 
+    it('throws with an invalid value', function() {
+
+
+        expect(() => {
+            cast({}, {}, {}, 'invalid-cast-map-key', () => {
+                // shouldn't get here
+                expect(false).to.be.true;
+            });
+        }).to.throw(TypeError)
+    });
+
     /*
         const invokeTest = (type, input, output) => {
             const msg = `*** type: '${type}', input: '${input}', output: '${output}' ***`;
