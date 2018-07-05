@@ -6,10 +6,10 @@
     "scripts": {
         "test": "./node_modules/.bin/mocha --recursive --reporter spec",
         "unit": "./node_modules/.bin/mocha ./test/unit/**/*.spec.js --recursive --reporter spec",
-        "integration": "./node_modules/.bin/mocha ./test/integration/* --recursive --reporter spec",
+        "integration": "./node_modules/.bin/mocha ./test/integration/**/* --recursive --reporter spec",
         "cover": "nyc ./node_modules/.bin/mocha --recursive --reporter spec",
-        "cover-unit": "nyc ./node_modules/.bin/mocha ./test/unit/* --recursive --reporter spec",
-        "cover-integration": "nyc ./node_modules/.bin/mocha ./test/integration/* --recursive --reporter spec"
+        "cover-unit": "nyc ./node_modules/.bin/mocha ./test/unit/**/*.spec.js --recursive --reporter spec",
+        "cover-integration": "nyc ./node_modules/.bin/mocha ./test/integration/**/*.spec.js --recursive --reporter spec"
     },
     "nyc": {
         "check-coverage": true,
