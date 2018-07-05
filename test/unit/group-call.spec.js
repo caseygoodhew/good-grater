@@ -3,7 +3,7 @@ const randomInt = require('random-int');
 const utils = require('./utils')();
 const callCounter = utils.callCounter;
 
-//const _groupCall = require('./src')('./group-call');
+const _groupCall = require('./src')('./group-call');
 
 describe('Test that group-call', function() {
     it('succeeds when there\'s no children', function(done) {
