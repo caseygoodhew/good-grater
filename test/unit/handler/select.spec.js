@@ -5,7 +5,7 @@ const _context = require('dynamic-context');
 
 const select = require('./src')('./handler/select');
 
-describe.only('Test that select', function() {
+describe('Test that select', function() {
 
     it('succeeds with a select value', function(testdone) {
         const spatulaMock = x => y => {
