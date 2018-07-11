@@ -243,7 +243,7 @@ describe('Test that grater does what grater should do', function() {
                 attrib: 'href',
                 cast: 'array',
                 name: 'fruit',
-                goto: true,
+                goto: 'grater',
                 then: [{
                     name: 'name',
                     select: '.name',

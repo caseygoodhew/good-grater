@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const _register = require('./register');
 const _walker = require('./walker');
-const _context = require('./context');
+const _context = require('dynamic-context');
 
 const intro = require('./intro')({
     spatula: require('good-spatula'),

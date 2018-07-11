@@ -1,37 +1,13 @@
 const expect = require('chai').expect;
 const utils = require('./utils')();
 const callCounter = utils.callCounter;
+const _context = require('dynamic-context');
 
 const cast = require('./src')('./handler/cast');
 
 describe('Test that cast', function() {
 
     it('succeeds with a data value', function(testdone) {
-        const assert = (castArgs, dataArgs, doneArgs, context) => {
-
-            expect(castArgs.length).to.equal(1);
-            expect(castArgs[0].length).to.equal(3);
-
-            expect(castArgs[0][0]).to.equal(context);
-            expect(castArgs[0][1]).to.deep.equal({
-                "spatula": "data-result"
-            });
-            expect(typeof castArgs[0][2]).to.equal('function');
-
-            expect(dataArgs).to.deep.equal([
-                [],
-                ["cast-result"]
-            ]);
-
-            expect(doneArgs).to.deep.equal([
-                ["data-result"]
-            ]);
-
-            testdone();
-        }
-
-        const dataCC = callCounter(() => 'data-result');
-
         const castCC = callCounter((_x, __x, done) => {
             done('cast-result');
         });
@@ -40,15 +16,24 @@ describe('Test that cast', function() {
             'cast-to': castCC
         }
 
-        const context = {
-            data: dataCC
-        };
+        const contextIn = _context(['data']).data('initial-value');
 
-        const doneCC = callCounter(() => {
-            assert(castCC.getLastArgs(), dataCC.getLastArgs(), doneCC.getLastArgs(), context);
+        cast(utils.spatula, castMap, contextIn, 'cast-to', contextOut => {
+            const castArgs = castCC.getLastArgs();
+            expect(castArgs.length).to.equal(1);
+            expect(castArgs[0].length).to.equal(3);
+
+            expect(castArgs[0][0]).to.equal(contextIn);
+            expect(castArgs[0][1]).to.deep.equal({
+                "spatula": "initial-value"
+            });
+
+            expect(typeof castArgs[0][2]).to.equal('function');
+
+            expect(contextOut.data()).to.deep.equal("cast-result");
+
+            testdone();
         });
-
-        cast(utils.spatula, castMap, context, 'cast-to', doneCC);
     });
 
     it('throws with an invalid value', function() {

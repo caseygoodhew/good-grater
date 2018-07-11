@@ -47,6 +47,7 @@
     },
     "dependencies": {
         "chalk": "^2.4.1",
+        "dynamic-context": "^1.0.0",
         "good-blender": "^1.0.2",
         "good-spatula": "^1.0.2",
         "lodash": "^4.17.10",

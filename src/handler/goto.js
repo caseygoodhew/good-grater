@@ -1,8 +1,8 @@
-const _context = require('../context');
+const _context = require('dynamic-context');
 
 module.exports = (spatula, loader, context, goto, done) => {
-    if (goto !== true) {
-        throw new Error(`goto can only be true - got ${goto}`);
+    if (goto !== 'grater') {
+        throw new Error(`goto can only be grater - got ${goto}`);
     }
 
     const node = context.node();
