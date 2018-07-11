@@ -83,4 +83,17 @@ describe('Test that group-call', function() {
         expect(() => groupCall(['function'])).to.throw(TypeError);
         expect(() => groupCall([() => {}, 'function'])).to.throw(TypeError);
     });
+
+    it('throws when a groupcall is already in progress', function() {
+        const groupCall = _groupCall(() => {
+            // should never execute
+            expect(false).to.be.true;
+        });
+
+        const handler = () => {};
+
+        groupCall([handler]);
+
+        expect(() => groupCall([handler])).to.throw(Error);
+    });
 });

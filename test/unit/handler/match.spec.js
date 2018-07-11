@@ -8,7 +8,7 @@ const match = require('./src')('./handler/match');
 describe('Test that match', function() {
 
     const invokeTest = (input, data, expected, testdone) => {
-        const contextIn = _context(['data']).data(data);
+        const contextIn = _context(['data']).set('data', data);
 
         const doneCC = callCounter(() => {
             assert(dataCC.getLastArgs(), doneCC.getLastArgs());
@@ -39,6 +39,10 @@ describe('Test that match', function() {
 
     it('succeeds with valid regex value using number data', function(testdone) {
         invokeTest(/[0-9]/g, 42, '42', testdone)
+    });
+
+    it('succeeds with valid regex value using undefined data', function(testdone) {
+        invokeTest(/[0-9]/g, undefined, '', testdone)
     });
 
     it('succeeds with a string for the regex value', function(testdone) {
